@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_user"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_daily"
+            android:icon="@drawable/ic_library_books"
+            android:title="My Diary" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_bell"
+            android:title=" Send Notification" />
+        <item
+            android:id="@+id/nav_rpe"
+            android:icon="@drawable/ic_plus"
+            android:title="Attendance Report" />
+
+    <item
+        android:id="@+id/nav_rpe_report"
+        android:icon="@drawable/ic_sign_out"
+        android:title="RPE Report" />
+
+        <item
+            android:id="@+id/nav_analytics"
+            android:icon="@drawable/ic_sign_out"
+            android:title="Analytics" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_sign_out"
+            android:title="logout" />
+    </group>
+
+
+</menu>
