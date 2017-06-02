@@ -1,0 +1,168 @@
+<RelativeLayout
+    android:padding="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="teamc.ucc.ie.teamc.AddEventFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="2"
+                android:inputType="textMultiLine"
+                android:hint="Description" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Spinner
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/event_spinner"
+            android:prompt="@string/spinner_prom"
+            android:entries="@array/event_array"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:hint="Location" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_start"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date"
+                android:hint="Start Date" />
+
+        </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_start_time"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/input_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date"
+                    android:hint="Start Time" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_end"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="datetime"
+                android:hint="End Date" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_end_time"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:hint="End Date" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_marginTop="20dp"
+            android:id="@+id/add_event_btn"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Event"
+            />
+    </LinearLayout>
+
+
+
+
+</ScrollView>
+
+
+</RelativeLayout>

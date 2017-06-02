@@ -91,6 +91,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
 
     private void mockList(List<CalendarEvent> eventList) {
+        
         Calendar startTime1 = Calendar.getInstance();
         Calendar endTime1 = Calendar.getInstance();
         endTime1.add(Calendar.MONTH, 1);

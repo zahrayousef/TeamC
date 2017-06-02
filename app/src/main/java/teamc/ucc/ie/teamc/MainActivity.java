@@ -1,6 +1,7 @@
 package teamc.ucc.ie.teamc;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -34,7 +35,7 @@ import teamc.ucc.ie.teamc.dummy.DummyContent;
 import static android.support.design.widget.NavigationView.*;
 
 public class MainActivity extends AppCompatActivity
-        implements OnNavigationItemSelectedListener, RpeFragment.OnListFragmentInteractionListener  {
+        implements OnNavigationItemSelectedListener, RpeFragment.OnListFragmentInteractionListener, AddEventFragment.OnFragmentInteractionListener  {
 
 
 
@@ -117,6 +118,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddEventFragment.newInstance("","")).commit();
+
         } else if (id == R.id.nav_daily) {
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DailyFragment.newInstance(0)).commit();
@@ -160,4 +163,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }
