@@ -6,10 +6,14 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import teamc.ucc.ie.teamc.model.Event;
+import teamc.ucc.ie.teamc.model.Rpe;
 import teamc.ucc.ie.teamc.model.User;
 
 /**
@@ -29,4 +33,13 @@ public interface BackendService {
 
     @GET("getEvent")
     Call<List<Event>> getEvent(@Header("token") String token);
+
+    @POST("addRpe")
+    Call<ResponseBody> addRpe(@Header("token") String token, @Body Rpe rpe);
+
+    @FormUrlEncoded
+    @POST("addAttendee")
+    Call<ResponseBody> addAttendee(@Header("token") String token, @Field("eventid") String eventid);
+
+
 }

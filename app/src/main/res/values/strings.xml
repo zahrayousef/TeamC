@@ -13,11 +13,25 @@
     <string name="spinner_prom">Select Event Type</string>
 
 
-        <string-array name="event_array">
-            <item>Select Event Type</item>
-            <item>Training</item>
-            <item>Match</item>
-            <item>Meeting</item>
-        </string-array>
+    <string-array name="event_array">
+        <item>Select Event Type</item>
+        <item>Training</item>
+        <item>Match</item>
+        <item>Meeting</item>
+    </string-array>
+
+    <string-array name="rpe_array">
+        <item>1- Rest</item>
+        <item>2- Really Easy</item>
+        <item>3- Easy</item>
+        <item>4- Moderate</item>
+        <item>5- Challenging</item>
+        <item>6- Very Challenging</item>
+        <item>7- Hard</item>
+        <item>8- Really hard</item>
+        <item>9- Really, Really hard</item>
+        <item>10- Maximal</item>
+    </string-array>
+    <string name="title_activity_event_view">EventViewActivity</string>
 
 </resources>

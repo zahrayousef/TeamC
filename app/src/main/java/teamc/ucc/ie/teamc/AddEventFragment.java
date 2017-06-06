@@ -1,10 +1,13 @@
 package teamc.ucc.ie.teamc;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,8 @@ import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFra
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Period;
+
+import java.util.Locale;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -66,6 +71,8 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
     private DateTime startTimeJoda;
     private DateTime endTimeJoda;
 
+    private ProgressDialog dialog;
+
     public AddEventFragment() {
         // Required empty public constructor
     }
@@ -95,6 +102,8 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        dialog = new ProgressDialog(getContext());
     }
 
     @Override
@@ -161,6 +170,8 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
                 rtpd.show(getActivity().getSupportFragmentManager(), TIME_END);
             }
         });
+
+
         view.findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,21 +192,44 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
                 String desc = ((EditText) view.findViewById(R.id.input_description)).getText().toString();
                 String location = ((EditText) view.findViewById(R.id.input_location)).getText().toString();
 
-                Event event = new Event(title, desc, start.toDate(), end.toDate(), "", location);
 
+                java.util.Calendar startTime1 = java.util.Calendar.getInstance();
+                startTime1.setTime(start.toDate());
+                Event event = new Event(title, desc,location,R.color.theme_primary, start.toCalendar(Locale.ENGLISH), end.toCalendar(Locale.ENGLISH),false);
+
+                dialog.show();
                 User.getService().addEvent("", event).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                        Toast.makeText(getContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                        dialog.hide();
+
+                        // 1. Instantiate an AlertDialog.Builder with its constructor
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+// 2. Chain together various setter methods to set the dialog characteristics
+                        builder.setMessage("The event has been added")
+                                .setTitle("Event");
+
+                        builder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+// 3. Get the AlertDialog from create()
+                        AlertDialog dialog = builder.create();
+
+                        dialog.show();
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        dialog.hide();
 
                     }
                 });
-                    Toast.makeText(getContext(), event.toString(), Toast.LENGTH_LONG).show();
+                    ;
             }
         });
         return view;

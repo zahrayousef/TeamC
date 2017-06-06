@@ -1,18 +1,56 @@
 package teamc.ucc.ie.teamc.model;
 
+import android.support.annotation.NonNull;
+
+import com.github.tibolte.agendacalendarview.models.BaseCalendarEvent;
+import com.github.tibolte.agendacalendarview.models.CalendarEvent;
+
+import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Timer;
+
+import teamc.ucc.ie.teamc.R;
 
 /**
  * Created by zahra on 02/06/2017.
  */
 
-public class Event {
+public class Event extends BaseCalendarEvent implements Serializable{
+
+
+    public Event(String title, String description, String location, int color, @NonNull Calendar startTime, @NonNull Calendar endTime, boolean allDay) {
+        super(title, description, location, color, startTime, endTime, allDay);
+        this.title = title;
+        this.description = description;
+        this.start = startTime.getTime();
+        this.end = endTime.getTime();
+        this.location = location;
+        this.setType("match");
+    }
+
+    public Event getBaseCalander(){
+
+        Calendar startTime1 = Calendar.getInstance();
+        startTime1.setTime(getStart());
+        Calendar endTime1 = Calendar.getInstance();
+        endTime1.setTime(getEnd());
+        Event event = new Event(title, description, location, R.color.theme_primary, startTime1, endTime1, false);
+        event.setId(getIds());
+        event.setType("match");
+        return event;
+    }
+
+    public Event(Event event){
+        super(event);
+
+
+    }
+
     @Override
     public String toString() {
         return "Event{" +
                 "title='" + title + '\'' +
-                ", desc='" + desc + '\'' +
+                ", description='" + description + '\'' +
                 ", start=" + start +
                 ", End=" + end +
                 ", type='" + type + '\'' +
@@ -20,14 +58,7 @@ public class Event {
                 '}';
     }
 
-    public Event(String title, String desc, Date start, Date end, String type, String location) {
-        this.title = title;
-        this.desc = desc;
-        this.start = start;
-        this.end = end;
-        this.type = type;
-        this.location = location;
-    }
+
 
     public String getTitle() {
         return title;
@@ -37,12 +68,12 @@ public class Event {
         this.title = title;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getStart() {
@@ -78,10 +109,25 @@ public class Event {
     }
 
     private String title;
-    private String desc;
+    private String description;
     private Date start;
     private Date end;
     private String type;
     private String location;
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setId(String id) {
+        this.ids = id;
+    }
+
+    private String ids;
+
+    @Override
+    public CalendarEvent copy() {
+        return getBaseCalander();
+    }
 
 }

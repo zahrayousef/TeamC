@@ -117,8 +117,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddEventFragment.newInstance("","")).commit();
+
 
         } else if (id == R.id.nav_daily) {
 
@@ -126,8 +125,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddEventFragment.newInstance("","")).commit();
         } else if (id == R.id.nav_rpe) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, RpeFragment.newInstance(0)).commit();
+
+
+            //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, RpeFragment.newInstance(0)).commit();
 
 
         } else if (id == R.id.nav_logout) {
