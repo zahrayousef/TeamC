@@ -24,14 +24,16 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import teamc.ucc.ie.teamc.dummy.DummyContent;
 import teamc.ucc.ie.teamc.model.Event;
 import teamc.ucc.ie.teamc.model.Rpe;
 import teamc.ucc.ie.teamc.model.User;
 
-public class EventViewActivity extends AppCompatActivity {
+public class EventViewActivity extends AppCompatActivity  implements AttendeeFragment.OnListFragmentInteractionListener{
 
     private TextView description;
     private String id;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +52,8 @@ public class EventViewActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("ids");
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
+        user = (User) getIntent().getSerializableExtra("user");
 
         description = (TextView) findViewById(R.id.text_description);
 
@@ -154,6 +150,19 @@ public class EventViewActivity extends AppCompatActivity {
                 });
             }
         });
+
+
+
+        if(user.isAdmin()) {
+            findViewById(R.id.player_contl).setVisibility(View.GONE);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AttendeeFragment.newInstance(0, id)).commit();
+
+        }
     }
 
+
+    @Override
+    public void onListFragmentInteraction(User item) {
+
+    }
 }

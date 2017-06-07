@@ -137,8 +137,8 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
                 RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
                         .setOnTimeSetListener(AddEventFragment.this)
                         .setStartTime(10, 10)
-                        .setDoneText("Yay")
-                        .setCancelText("Nop");
+                        .setDoneText("Yes")
+                        .setCancelText("No");
                 rtpd.show(getActivity().getSupportFragmentManager(), TIME_START);
             }
         });

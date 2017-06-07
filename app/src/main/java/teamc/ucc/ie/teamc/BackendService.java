@@ -42,4 +42,9 @@ public interface BackendService {
     Call<ResponseBody> addAttendee(@Header("token") String token, @Field("eventid") String eventid);
 
 
+    @FormUrlEncoded
+    @POST("getAttendee")
+    Call<List<User>> getAttendee(@Header("token") String token, @Field("eventid") String eventid);
+
+
 }

@@ -142,8 +142,8 @@
                 android:id="@+id/input_end_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="time"
-                android:hint="End Date" />
+                android:hint="End Time"
+                android:inputType="time" />
 
         </android.support.design.widget.TextInputLayout>
 

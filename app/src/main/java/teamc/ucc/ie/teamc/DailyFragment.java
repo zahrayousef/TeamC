@@ -17,6 +17,7 @@ import com.github.tibolte.agendacalendarview.models.CalendarEvent;
 import com.github.tibolte.agendacalendarview.models.DayItem;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,6 +38,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
     private int mColumnCount = 1;
 
     private ProgressDialog dialog;
+    private Serializable user;
 
 
     /**
@@ -48,10 +50,11 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static DailyFragment newInstance(int columnCount) {
+    public static DailyFragment newInstance(int columnCount, User user) {
         DailyFragment fragment = new DailyFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putSerializable("user", user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,9 +65,10 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            user = getArguments().getSerializable("user");
         }
 
-        dialog = new ProgressDialog(getContext());
+
     }
 
     @Override
@@ -86,20 +90,23 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
 
 
+        dialog = new ProgressDialog(getContext());
 
         dialog.show();
         User.getService().getEvent("").enqueue(new Callback<List<Event>>() {
 
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
-                List<Event> events = response.body();
-                Toast.makeText(getContext(), "Size:" + events.size() + " Event 1"+ events.get(0).getTitle(), Toast.LENGTH_LONG).show();
-                List<CalendarEvent> eventList = new ArrayList<>();
-                mockList(eventList, events);
-                mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.getDefault(), DailyFragment.this);
 
-                
-                dialog.hide();
+                List<Event> events = response.body();
+
+                    List<CalendarEvent> eventList = new ArrayList<>();
+                    mockList(eventList, events);
+                    mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.getDefault(), DailyFragment.this);
+
+
+                    dialog.hide();
+
             }
 
             @Override
@@ -169,6 +176,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
             intent.putExtra("title", event.getTitle());
             intent.putExtra("desc", ((Event) event).getDescription());
             intent.putExtra("ids", ((Event) event).getIds());
+            intent.putExtra("user", user);
         };
 
 

@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import teamc.ucc.ie.teamc.RpeFragment.OnListFragmentInteractionListener;
+import teamc.ucc.ie.teamc.AttendeeFragment.OnListFragmentInteractionListener;
 import teamc.ucc.ie.teamc.dummy.DummyContent.DummyItem;
+import teamc.ucc.ie.teamc.model.User;
 
 import java.util.List;
 
@@ -18,10 +19,10 @@ import java.util.List;
  */
 public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<User> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyRpeRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyRpeRecyclerViewAdapter(List<User> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -36,8 +37,8 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(String.valueOf(position+1));
+        holder.mContentView.setText(mValues.get(position).getDisplayName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +61,7 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public User mItem;
 
         public ViewHolder(View view) {
             super(view);

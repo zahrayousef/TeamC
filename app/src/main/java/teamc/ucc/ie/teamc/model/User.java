@@ -1,5 +1,7 @@
 package teamc.ucc.ie.teamc.model;
 
+import java.io.Serializable;
+
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import teamc.ucc.ie.teamc.BackendService;
@@ -8,7 +10,7 @@ import teamc.ucc.ie.teamc.BackendService;
  * Created by zahra on 31/05/2017.
  */
 
-public class User {
+public class User implements Serializable{
     @Override
     public String toString() {
         return "User{" +

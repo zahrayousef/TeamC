@@ -48,14 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
 
         dialog = ProgressDialog.show(this, "",
@@ -79,6 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "Token:" + task.getResult().getToken());
                             login(task.getResult().getToken(), user);
 
+
+
                         }
                     });
                 } else {
@@ -96,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         };
 
 
-        signIn = AuthUI.getInstance().createSignInIntentBuilder()
+        signIn = AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false)
                 .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                 .setTheme(R.style.GreenTheme).setLogo(R.drawable.logo).build();
@@ -120,13 +114,16 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
 
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("displayName", user.getDisplayName());
+                    intent.putExtra("email", user.getEmail());
+                    intent.putExtra("user", user);
                     if (user.isAdmin()){
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("menu", R.menu.activity_main_coach_drawer);
                         startActivity(intent);
                         finish();
                     }else {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+
                         intent.putExtra("menu", R.menu.activity_main_drawer);
                         startActivity(intent);
                         finish();
@@ -157,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                User userModel = new User(user.getUid(), user.getEmail(), false, user.getDisplayName());
+                final User userModel = new User(user.getUid(), user.getEmail(), false, user.getDisplayName());
                 dialog.show();
                 service.addUser(token, userModel).enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -166,6 +163,9 @@ public class LoginActivity extends AppCompatActivity {
                         dialog.hide();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("menu", R.menu.activity_main_drawer);
+                        intent.putExtra("displayName", userModel.getDisplayName());
+                        intent.putExtra("email", userModel.getEmail());
+                        intent.putExtra("user", userModel);
                         startActivity(intent);
                         finish();
                     }
@@ -183,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         findViewById(R.id.coach_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User userModel = new User(user.getUid(), user.getEmail(), true, user.getDisplayName());
+                final User userModel = new User(user.getUid(), user.getEmail(), true, user.getDisplayName());
                 dialog.show();
                 service.addUser(token, userModel).enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -192,6 +192,9 @@ public class LoginActivity extends AppCompatActivity {
                         dialog.hide();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("menu", R.menu.activity_main_coach_drawer);
+                        intent.putExtra("displayName", userModel.getDisplayName());
+                        intent.putExtra("email", userModel.getEmail());
+                        intent.putExtra("user", userModel);
                         startActivity(intent);
                         finish();
                     }

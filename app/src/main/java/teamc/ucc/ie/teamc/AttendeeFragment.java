@@ -2,18 +2,32 @@ package teamc.ucc.ie.teamc;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import teamc.ucc.ie.teamc.dummy.DummyContent;
-import teamc.ucc.ie.teamc.dummy.DummyContent.DummyItem;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GetTokenResult;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import teamc.ucc.ie.teamc.dummy.DummyContent;
+import teamc.ucc.ie.teamc.dummy.DummyContent.DummyItem;
+import teamc.ucc.ie.teamc.model.User;
 
 /**
  * A fragment representing a list of Items.
@@ -21,27 +35,32 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class RpeFragment extends Fragment {
+public class AttendeeFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static final String ARG_EVENT_ID = "event-id";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+    private String eventid;
     private OnListFragmentInteractionListener mListener;
+    private View view;
+    private RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public RpeFragment() {
+    public AttendeeFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static RpeFragment newInstance(int columnCount) {
-        RpeFragment fragment = new RpeFragment();
+    public static AttendeeFragment newInstance(int columnCount, String eventid) {
+        AttendeeFragment fragment = new AttendeeFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putString(ARG_EVENT_ID, eventid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,24 +71,54 @@ public class RpeFragment extends Fragment {
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            eventid = getArguments().getString(ARG_EVENT_ID);
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rpe_list, container, false);
+
+        view = inflater.inflate(R.layout.fragment_rpe_list, container, false);
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+        if (view instanceof RelativeLayout) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+
+
+            //recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            if (mAuth.getCurrentUser() != null) {
+                mAuth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<GetTokenResult> task) {
+                        User.getService().getAttendee(task.getResult().getToken(), eventid).enqueue(new Callback<List<User>>() {
+                            @Override
+                            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                                ((TextView)view.findViewById(R.id.text_num_players)).setText(String.valueOf(response.body().size()));
+                                recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(response.body(), mListener));
+                                //Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<User>> call, Throwable t) {
+
+                                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.d("app", t.getMessage());
+                            }
+                        });
+                    }
+                });
+            }
         }
         return view;
     }
@@ -104,6 +153,6 @@ public class RpeFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(User item);
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,31 +15,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
-
-import java.util.Arrays;
 
 
 import teamc.ucc.ie.teamc.dummy.DummyContent;
+import teamc.ucc.ie.teamc.model.User;
 
 import static android.support.design.widget.NavigationView.*;
 
 public class MainActivity extends AppCompatActivity
-        implements OnNavigationItemSelectedListener, RpeFragment.OnListFragmentInteractionListener, AddEventFragment.OnFragmentInteractionListener  {
+        implements OnNavigationItemSelectedListener, AttendeeFragment.OnListFragmentInteractionListener, AddEventFragment.OnFragmentInteractionListener  {
 
 
 
     private View fragmentContainer;
     private Toolbar toolbar;
+    private User user;
 
 
     @Override
@@ -53,15 +47,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-        fragmentContainer = findViewById(R.id.fragment_container);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -73,6 +58,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.inflateMenu(getIntent().getIntExtra("menu",R.menu.activity_main_drawer));
+
+        user = (User) getIntent().getSerializableExtra("user");
+        navigationView.setCheckedItem(R.id.nav_daily);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DailyFragment.newInstance(0,user)).commit();
+
+
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.txt_user)).setText(getIntent().getStringExtra("displayName"));
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.txt_email)).setText(getIntent().getStringExtra("email"));
 
     }
 
@@ -116,23 +109,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_daily) {
 
-
-        } else if (id == R.id.nav_daily) {
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DailyFragment.newInstance(0)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DailyFragment.newInstance(0, user)).commit();
 
         } else if (id == R.id.nav_slideshow) {
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddEventFragment.newInstance("","")).commit();
-        } else if (id == R.id.nav_rpe) {
+        }
 
-
-            //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, RpeFragment.newInstance(0)).commit();
-
-
-        } else if (id == R.id.nav_logout) {
+        else if (id == R.id.nav_logout) {
 
             AuthUI.getInstance()
                     .signOut(this)
@@ -159,14 +145,16 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
-    }
 
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(User item) {
 
     }
 }
