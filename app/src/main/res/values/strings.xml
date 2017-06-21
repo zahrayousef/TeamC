@@ -8,7 +8,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_login">TeamC</string>
 
     <string name="spinner_prom">Select Event Type</string>
 
@@ -16,8 +16,14 @@
     <string-array name="event_array">
         <item>Select Event Type</item>
         <item>Training</item>
-        <item>Match</item>
         <item>Meeting</item>
+        <item>Gym - Upper Limb</item>
+        <item>Gym - Lower Limb</item>
+        <item>Gym - Total Body</item>
+        <item>Game</item>
+        <item>Team Training</item>
+        <item>Speed Session</item>
+        <item>Conditioning</item>
     </string-array>
 
     <string-array name="rpe_array">
@@ -33,6 +39,6 @@
         <item>10- Maximal</item>
     </string-array>
 
-    <string name="title_activity_event_view">EventViewActivity</string>
+    <string name="title_activity_event_view">Event</string>
 
 </resources>

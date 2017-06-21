@@ -18,14 +18,14 @@ import teamc.ucc.ie.teamc.R;
 public class Event extends BaseCalendarEvent implements Serializable{
 
 
-    public Event(String title, String description, String location, int color, @NonNull Calendar startTime, @NonNull Calendar endTime, boolean allDay) {
+    public Event(String title, String description, String location, int color, @NonNull Calendar startTime, @NonNull Calendar endTime,String eventType,  boolean allDay) {
         super(title, description, location, color, startTime, endTime, allDay);
         this.title = title;
         this.description = description;
         this.start = startTime.getTime();
         this.end = endTime.getTime();
         this.location = location;
-        this.setType("match");
+        this.setType(eventType);
     }
 
     public Event getBaseCalander(){
@@ -34,9 +34,8 @@ public class Event extends BaseCalendarEvent implements Serializable{
         startTime1.setTime(getStart());
         Calendar endTime1 = Calendar.getInstance();
         endTime1.setTime(getEnd());
-        Event event = new Event(title, description, location, R.color.theme_primary, startTime1, endTime1, false);
+        Event event = new Event(title, description, location, R.color.theme_primary, startTime1, endTime1, type, false);
         event.setId(getIds());
-        event.setType("match");
         return event;
     }
 

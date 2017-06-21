@@ -46,5 +46,19 @@ public interface BackendService {
     @POST("getAttendee")
     Call<List<User>> getAttendee(@Header("token") String token, @Field("eventid") String eventid);
 
+    @FormUrlEncoded
+    @POST("getRpe")
+    Call<List<User>> getRpe(@Header("token") String token, @Field("eventid") String eventid);
+
+
+    @FormUrlEncoded
+    @POST("getStatUser")
+    Call<List<Rpe>> getStatUser(@Header("token") String token, @Field("uid") String uid);
+
+
+    @GET("getPlayers")
+    Call<List<User>> getPlayers(@Header("token") String token);
+
+
 
 }

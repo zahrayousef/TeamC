@@ -22,11 +22,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 
-import teamc.ucc.ie.teamc.dummy.DummyContent;
 import teamc.ucc.ie.teamc.model.User;
 
 import static android.support.design.widget.NavigationView.*;
 
+/**
+ * The main homepage activity (screen)
+ * */
 public class MainActivity extends AppCompatActivity
         implements OnNavigationItemSelectedListener, AttendeeFragment.OnListFragmentInteractionListener, AddEventFragment.OnFragmentInteractionListener  {
 
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.txt_user)).setText(getIntent().getStringExtra("displayName"));
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.txt_email)).setText(getIntent().getStringExtra("email"));
-
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.txt_title)).setText(getIntent().getStringExtra("title"));
     }
 
 
@@ -110,7 +112,6 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_daily) {
-
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DailyFragment.newInstance(0, user)).commit();
 
         } else if (id == R.id.nav_slideshow) {
@@ -129,6 +130,8 @@ public class MainActivity extends AppCompatActivity
                             finish();
                         }
                     });
+        } else if (id == R.id.nav_analytics){
+            startActivity(new Intent(this, GraphActivity.class));
         }
 
 

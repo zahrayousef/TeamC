@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +73,7 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
     private DateTime endTimeJoda;
 
     private ProgressDialog dialog;
+    private Spinner event_spinner;
 
     public AddEventFragment() {
         // Required empty public constructor
@@ -115,6 +117,7 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
         startTime = (EditText) view.findViewById(R.id.input_start_time);
         endDate = (EditText) view.findViewById(R.id.input_end);
         endTime = (EditText) view.findViewById(R.id.input_end_time);
+        event_spinner = ((Spinner)view.findViewById(R.id.event_spinner));
 
         startDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -192,10 +195,19 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
                 String desc = ((EditText) view.findViewById(R.id.input_description)).getText().toString();
                 String location = ((EditText) view.findViewById(R.id.input_location)).getText().toString();
 
+                
+
 
                 java.util.Calendar startTime1 = java.util.Calendar.getInstance();
                 startTime1.setTime(start.toDate());
-                Event event = new Event(title, desc,location,R.color.theme_primary, start.toCalendar(Locale.ENGLISH), end.toCalendar(Locale.ENGLISH),false);
+                Event event = new Event(
+                        title,
+                        desc,
+                        location,R.color.theme_primary,
+                        start.toCalendar(Locale.ENGLISH),
+                        end.toCalendar(Locale.ENGLISH),
+                        event_spinner.getSelectedItem().toString(),
+                        false);
 
                 dialog.show();
                 User.getService().addEvent("", event).enqueue(new Callback<ResponseBody>() {

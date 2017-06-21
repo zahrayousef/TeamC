@@ -17,7 +17,7 @@ public class User implements Serializable{
                 "uid='" + uid + '\'' +
                 ", email='" + email + '\'' +
                 ", isAdmin=" + isAdmin +
-                ", displayName='" + displayName + '\'' +
+                ", displayName='" + displayName + '\'' +", rpe ='" + rpe + '\'' +
                 '}';
     }
 
@@ -64,6 +64,7 @@ public class User implements Serializable{
     private String email;
     private boolean isAdmin;
     private String displayName;
+    private int rpe;
 
 
     public static BackendService getService(){
@@ -74,5 +75,13 @@ public class User implements Serializable{
 
         BackendService service = retrofit.create(BackendService.class);
         return service;
+    }
+
+    public int getRpe() {
+        return rpe;
+    }
+
+    public void setRpe(int rpe) {
+        this.rpe = rpe;
     }
 }

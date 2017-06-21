@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import teamc.ucc.ie.teamc.AttendeeFragment.OnListFragmentInteractionListener;
-import teamc.ucc.ie.teamc.dummy.DummyContent.DummyItem;
 import teamc.ucc.ie.teamc.model.User;
 
 import java.util.List;
@@ -21,10 +20,15 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
 
     private final List<User> mValues;
     private final OnListFragmentInteractionListener mListener;
+    private final int type;
 
-    public MyRpeRecyclerViewAdapter(List<User> items, OnListFragmentInteractionListener listener) {
+    public final static int TYPE_ATTEND = 0;
+    public final static int TYPE_RPE = 1;
+
+    public MyRpeRecyclerViewAdapter(List<User> items,int type, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+        this.type = type;
     }
 
     @Override
@@ -39,6 +43,8 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(String.valueOf(position+1));
         holder.mContentView.setText(mValues.get(position).getDisplayName());
+
+        if (type == TYPE_RPE) holder.score.setText(String.valueOf(mValues.get(position).getRpe()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +67,7 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        private final TextView score;
         public User mItem;
 
         public ViewHolder(View view) {
@@ -68,6 +75,7 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
+            score = (TextView) view.findViewById(R.id.score);
         }
 
         @Override

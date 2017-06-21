@@ -25,8 +25,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import teamc.ucc.ie.teamc.dummy.DummyContent;
-import teamc.ucc.ie.teamc.dummy.DummyContent.DummyItem;
+
 import teamc.ucc.ie.teamc.model.User;
 
 /**
@@ -40,12 +39,14 @@ public class AttendeeFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String ARG_EVENT_ID = "event-id";
+    private static final String ARG_TYPE = "type";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private String eventid;
     private OnListFragmentInteractionListener mListener;
     private View view;
     private RecyclerView recyclerView;
+    private int type;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -56,10 +57,11 @@ public class AttendeeFragment extends Fragment {
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static AttendeeFragment newInstance(int columnCount, String eventid) {
+    public static AttendeeFragment newInstance(int columnCount, String eventid, int type) {
         AttendeeFragment fragment = new AttendeeFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
+        args.putInt(ARG_TYPE, type);
         args.putString(ARG_EVENT_ID, eventid);
         fragment.setArguments(args);
         return fragment;
@@ -72,6 +74,7 @@ public class AttendeeFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             eventid = getArguments().getString(ARG_EVENT_ID);
+            type = getArguments().getInt(ARG_TYPE);
 
         }
     }
@@ -101,21 +104,42 @@ public class AttendeeFragment extends Fragment {
                 mAuth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     @Override
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
-                        User.getService().getAttendee(task.getResult().getToken(), eventid).enqueue(new Callback<List<User>>() {
-                            @Override
-                            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                                ((TextView)view.findViewById(R.id.text_num_players)).setText(String.valueOf(response.body().size()));
-                                recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(response.body(), mListener));
-                                //Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT).show();
-                            }
 
-                            @Override
-                            public void onFailure(Call<List<User>> call, Throwable t) {
+                        if (type == MyRpeRecyclerViewAdapter.TYPE_ATTEND) {
+                            User.getService().getAttendee(task.getResult().getToken(), eventid).enqueue(new Callback<List<User>>() {
+                                @Override
+                                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                                    ((TextView) view.findViewById(R.id.text_num_players)).setText(String.valueOf(response.body().size()));
+                                    recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(response.body(), type, mListener));
+                                    //Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                                }
 
-                                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.d("app", t.getMessage());
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<List<User>> call, Throwable t) {
+
+                                    //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.d("app", t.getMessage());
+                                }
+                            });
+                        } else if (type == MyRpeRecyclerViewAdapter.TYPE_RPE){
+
+                            User.getService().getRpe(task.getResult().getToken(), eventid).enqueue(new Callback<List<User>>() {
+                                @Override
+                                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                                    ((TextView) view.findViewById(R.id.text_num_players)).setText(String.valueOf(response.body().size()));
+                                    recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(response.body(), type, mListener));
+                                    //Toast.makeText(getContext(), response.body().toString(), Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<User>> call, Throwable t) {
+
+                                    //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.d("app", t.getMessage());
+                                }
+                            });
+
+                        }
                     }
                 });
             }

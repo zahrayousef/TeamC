@@ -6,10 +6,14 @@ package teamc.ucc.ie.teamc.model;
 
 public class Rpe {
     String eventId;
+    int score;
+    private int duration;
+    private Event event;
 
-    public Rpe(String eventId, int score) {
+    public Rpe(String eventId, int score, int duration) {
         this.eventId = eventId;
         this.score = score;
+        this.duration = duration;
     }
 
     public String getEventId() {
@@ -28,5 +32,20 @@ public class Rpe {
         this.score = score;
     }
 
-    int score;
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 }

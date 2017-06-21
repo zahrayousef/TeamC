@@ -68,8 +68,14 @@ public class LoginActivity extends AppCompatActivity {
                     user.getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                         @Override
                         public void onComplete(@NonNull Task<GetTokenResult> task) {
-                            Log.d(TAG, "Token:" + task.getResult().getToken());
-                            login(task.getResult().getToken(), user);
+
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "Token:" + task.getResult().getToken());
+                                login(task.getResult().getToken(), user);
+                            } else {
+                                mAuth.signOut();
+                                finish();
+                            }
 
 
 
@@ -118,12 +124,14 @@ public class LoginActivity extends AppCompatActivity {
                     intent.putExtra("displayName", user.getDisplayName());
                     intent.putExtra("email", user.getEmail());
                     intent.putExtra("user", user);
+
                     if (user.isAdmin()){
+                        intent.putExtra("title", "coach");
                         intent.putExtra("menu", R.menu.activity_main_coach_drawer);
                         startActivity(intent);
                         finish();
                     }else {
-
+                        intent.putExtra("title", "player");
                         intent.putExtra("menu", R.menu.activity_main_drawer);
                         startActivity(intent);
                         finish();
