@@ -1,8 +1,6 @@
 package teamc.ucc.ie.teamc.model;
 
-/**
- * Created by zahra on 05/06/2017.
- */
+
 
 public class Rpe {
     String eventId;

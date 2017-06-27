@@ -29,10 +29,15 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import teamc.ucc.ie.teamc.model.User;
 
+/**
+ * We rely on firebase Auth to provide login mechanism
+ * https://github.com/firebase/FirebaseUI-Android/tree/master/auth
+ * https://firebase.google.com/docs/auth/android/password-auth
+ * */
 public class LoginActivity extends AppCompatActivity {
 
 
-    private static final String TAG = "mainactivity";
+    private static final String TAG = "loginActivity";
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -48,15 +53,16 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
+        // initialize loading dialog
         dialog = ProgressDialog.show(this, "",
                 "Loading. Please wait...", true);
 
 
 
 
+        // initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        // listen for user login
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -99,12 +105,9 @@ public class LoginActivity extends AppCompatActivity {
         signIn = AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false)
                 .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                         new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                .setTheme(R.style.GreenTheme).setLogo(R.drawable.logo).build();
+                .setTheme(R.style.GreenTheme).setLogo(R.drawable.logo2).build();
 
-        // retrive User
-        //if Empty
-        // Register The user
-        // If not Loged the user
+
     }
 
     private void login(final String token, final FirebaseUser userFire){
@@ -115,22 +118,24 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 dialog.hide();
                 User user = response.body();
+                // is user exist let user select his title
                 if (user.getUid() == null){
                     showSelection(token, userFire);
 
                 } else {
-
+                    // if there is a user, prepare the data and start activity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("displayName", user.getDisplayName());
                     intent.putExtra("email", user.getEmail());
                     intent.putExtra("user", user);
-
+                    //if user is a couch start with coach data
                     if (user.isAdmin()){
                         intent.putExtra("title", "coach");
                         intent.putExtra("menu", R.menu.activity_main_coach_drawer);
                         startActivity(intent);
                         finish();
                     }else {
+                        // if user is player start with player info
                         intent.putExtra("title", "player");
                         intent.putExtra("menu", R.menu.activity_main_drawer);
                         startActivity(intent);
@@ -142,14 +147,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-
-                Log.d(TAG, "Faile" + t.getMessage());
+                Log.d(TAG, "failed" + t.getMessage());
             }
         });
     }
 
     /**
-     Let the user select if he is a coauch or player
+     Let the user select if he is a coach or player
      **/
     private void showSelection(final String token, final FirebaseUser user) {
 
@@ -164,6 +168,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 final User userModel = new User(user.getUid(), user.getEmail(), false, user.getDisplayName());
                 dialog.show();
+                // if user select player, post to data to the database once the successful open the main activity
                 service.addUser(token, userModel).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -188,6 +193,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // if user select coach, post to data to the database once the successful open the main activity
         findViewById(R.id.coach_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,6 +224,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * get the result from Firebase Auth
+     * */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // RC_SIGN_IN is the request code you passed into startActivityForResult(...) when starting the sign in flow.
@@ -226,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
 
             // Successfully signed in
             if (resultCode == ResultCodes.OK) {
-                //startActivity(SignedInActivity.createIntent(this, response));
+
 
                 final FirebaseUser user = mAuth.getCurrentUser();
 

@@ -38,18 +38,15 @@ import static android.R.attr.minDate;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AddEventFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AddEventFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Responsible for handling the coach input when he wants to add a new event
+ * we used BetterPicker library for date picking
+ * https://github.com/code-troopers/android-betterpickers
+ * we used Joda time for date & time manipulation
+ * https://github.com/dlew/joda-time-android
  */
 public class AddEventFragment extends Fragment implements CalendarDatePickerDialogFragment.OnDateSetListener, RadialTimePickerDialogFragment.OnTimeSetListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     private static final String DATE_START = "dateStart";
     private static final String DATE_END = "dateEnd";
@@ -57,11 +54,7 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
     private static final String TIME_START = "timeStart";
     private static final String TIME_END = "timeEnd";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
     private View view;
     private EditText startDate;
     private EditText endDate;
@@ -79,31 +72,17 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddEventFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
-    public static AddEventFragment newInstance(String param1, String param2) {
+    public static AddEventFragment newInstance() {
         AddEventFragment fragment = new AddEventFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         dialog = new ProgressDialog(getContext());
     }
@@ -111,25 +90,29 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_add_event, container, false);
+        // find views for user input
         startDate = (EditText) view.findViewById(R.id.input_start);
         startTime = (EditText) view.findViewById(R.id.input_start_time);
         endDate = (EditText) view.findViewById(R.id.input_end);
         endTime = (EditText) view.findViewById(R.id.input_end_time);
         event_spinner = ((Spinner)view.findViewById(R.id.event_spinner));
 
+        //
         startDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) return;
-                CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
-                        .setOnDateSetListener(AddEventFragment.this)
-                        .setFirstDayOfWeek(Calendar.MONDAY)
-                        .setDoneText("Yes")
-                        .setCancelText("No");
+                showStartDate();
+            }
+        });
 
-                cdp.show(getActivity().getSupportFragmentManager(), DATE_START);
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartDate();
             }
         });
 
@@ -137,12 +120,15 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) return;
-                RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
-                        .setOnTimeSetListener(AddEventFragment.this)
-                        .setStartTime(10, 10)
-                        .setDoneText("Yes")
-                        .setCancelText("No");
-                rtpd.show(getActivity().getSupportFragmentManager(), TIME_START);
+                showStartTime();
+
+            }
+        });
+
+        startTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartTime();
             }
         });
 
@@ -152,54 +138,61 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) return;
-                CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
-                        .setOnDateSetListener(AddEventFragment.this)
-                        .setFirstDayOfWeek(Calendar.MONDAY)
-                        .setDoneText("Yes")
-                        .setCancelText("No");
-                cdp.show(getActivity().getSupportFragmentManager(), DATE_END);
+                showEndDate();
+
             }
         });
+
+        endDate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                showEndDate();
+            }
+            });
+
+
 
         endTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) return;
-                RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
-                        .setOnTimeSetListener(AddEventFragment.this)
-                        .setStartTime(10, 10)
-                        .setDoneText("Yes")
-                        .setCancelText("No");
-                rtpd.show(getActivity().getSupportFragmentManager(), TIME_END);
+                showEndTime();
+            }
+        });
+
+        endTime.setOnClickListener(new View .OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                showEndTime();
             }
         });
 
 
+
+
+        // Handling add event click
         view.findViewById(R.id.add_event_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                //prepare date and time combine them into one object for startDate and EndDate
+                // create a new DateTime object with date and time
                 DateTime start = new DateTime(startDateJoda);
-
-                //start = start.plus(startTimeJoda.getMillis());
-
                 start =  start.plusHours(startTimeJoda.getHourOfDay());
                 start = start.plusMinutes(startTimeJoda.getMinuteOfHour());
 
                 DateTime end = new DateTime(endDateJoda);
-
                 end =  end.plusHours(endTimeJoda.getHourOfDay());
                 end = end.plusMinutes(startTimeJoda.getMinuteOfHour());
 
+                // get user inputs fields
                 String title = ((EditText) view.findViewById(R.id.input_title)).getText().toString();
                 String desc = ((EditText) view.findViewById(R.id.input_description)).getText().toString();
                 String location = ((EditText) view.findViewById(R.id.input_location)).getText().toString();
 
-                
 
-
-                java.util.Calendar startTime1 = java.util.Calendar.getInstance();
-                startTime1.setTime(start.toDate());
+                // create event object from the use input
                 Event event = new Event(
                         title,
                         desc,
@@ -209,11 +202,11 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
                         event_spinner.getSelectedItem().toString(),
                         false);
 
+                // post event to the firebase backend
                 dialog.show();
                 User.getService().addEvent("", event).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
                         dialog.hide();
 
                         // 1. Instantiate an AlertDialog.Builder with its constructor
@@ -247,28 +240,45 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    private void showStartDate(){
+        CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
+                .setOnDateSetListener(AddEventFragment.this)
+                .setFirstDayOfWeek(Calendar.MONDAY)
+                .setDoneText("Yes")
+                .setCancelText("No");
+
+        cdp.show(getActivity().getSupportFragmentManager(), DATE_START);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    private void showStartTime(){
+
+        RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
+                .setOnTimeSetListener(AddEventFragment.this)
+                .setStartTime(10, 10)
+                .setDoneText("Yes")
+                .setCancelText("No");
+        rtpd.show(getActivity().getSupportFragmentManager(), TIME_START);
+
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    private void showEndDate(){
+
+        CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
+                .setOnDateSetListener(AddEventFragment.this)
+                .setFirstDayOfWeek(Calendar.MONDAY)
+                .setDoneText("Yes")
+                .setCancelText("No");
+        cdp.show(getActivity().getSupportFragmentManager(), DATE_END);
+    }
+
+    private void showEndTime(){
+
+        RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
+                .setOnTimeSetListener(AddEventFragment.this)
+                .setStartTime(10, 10)
+                .setDoneText("Yes")
+                .setCancelText("No");
+        rtpd.show(getActivity().getSupportFragmentManager(), TIME_END);
     }
 
     @Override
@@ -284,6 +294,7 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
         }
     }
 
+    // listener when user select data
     @Override
     public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
 
@@ -298,18 +309,5 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+
 }

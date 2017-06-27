@@ -12,7 +12,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 /**
- * Created by zahra on 29/05/2017.
+ * https://www.youtube.com/watch?v=wKwCgabRV2A
+ * https://firebase.google.com/docs/cloud-messaging/
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {

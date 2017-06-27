@@ -17,7 +17,8 @@ import teamc.ucc.ie.teamc.model.Rpe;
 import teamc.ucc.ie.teamc.model.User;
 
 /**
- * Created by zahra on 31/05/2017.
+ * defining our backend API as interface so it can be used with Retrofit
+ * http://square.github.io/retrofit/
  */
 
 public interface BackendService {
@@ -41,7 +42,6 @@ public interface BackendService {
     @POST("addAttendee")
     Call<ResponseBody> addAttendee(@Header("token") String token, @Field("eventid") String eventid);
 
-
     @FormUrlEncoded
     @POST("getAttendee")
     Call<List<User>> getAttendee(@Header("token") String token, @Field("eventid") String eventid);
@@ -56,7 +56,7 @@ public interface BackendService {
     Call<List<Rpe>> getStatUser(@Header("token") String token, @Field("uid") String uid);
 
 
-    @GET("getPlayers")
+    @POST("getPlayers")
     Call<List<User>> getPlayers(@Header("token") String token);
 
 

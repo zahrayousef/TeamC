@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,12 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +29,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -44,6 +38,12 @@ import teamc.ucc.ie.teamc.model.Event;
 import teamc.ucc.ie.teamc.model.Rpe;
 import teamc.ucc.ie.teamc.model.User;
 
+/**
+ * This handle displaying event details
+ * we use retrofit to get event details.
+ * http://square.github.io/retrofit/
+ *
+ * */
 public class EventViewActivity extends AppCompatActivity  implements AttendeeFragment.OnListFragmentInteractionListener{
 
     private TextView description;
@@ -60,17 +60,20 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
         setContentView(R.layout.activity_event_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
         getSupportActionBar().setTitle(getIntent().getStringExtra("title"));
-
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+
+        //get data from past activity
         id = getIntent().getStringExtra("ids");
         type = getIntent().getStringExtra("type");
+        user = (User) getIntent().getSerializableExtra("user");
+        start =  new DateTime(getIntent().getLongExtra("start",0));
+        end =  new DateTime(getIntent().getLongExtra("end",0));
 
+// if type is training show the RPE Button if not hide the button
         if (type.equals("Training")){
             eventType = 1;
 
@@ -80,10 +83,6 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
 
 
 
-        user = (User) getIntent().getSerializableExtra("user");
-
-        start =  new DateTime(getIntent().getLongExtra("start",0));
-        end =  new DateTime(getIntent().getLongExtra("end",0));
 
         description = (TextView) findViewById(R.id.text_description);
         TextView startDate = (TextView) findViewById(R.id.text_start_date);
@@ -91,17 +90,18 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd, MMMM, yyyy @ HH:mmaa");
         String dateTxt = fmt.print(start) + DateTimeFormat.forPattern(" 'till' HH:mmaa").print(end);
 
+        //set the text to display event description and date
         startDate.setText(dateTxt);
         description.setText(getIntent().getStringExtra("desc"));
 
 
+        // Handle RPE button click
         findViewById(R.id.btn_rpe).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builderSingle = new AlertDialog.Builder(EventViewActivity.this);
 
-
-
+                // create adapter that hold RPE score
                 final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(EventViewActivity.this, android.R.layout.select_dialog_singlechoice, getResources().getStringArray(R.array.rpe_array));
 
                 builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -111,6 +111,8 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
                     }
                 });
 
+                //set the adapter
+                // https://stackoverflow.com/questions/15762905/how-can-i-display-a-list-view-in-an-android-alert-dialog
                 builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -136,6 +138,7 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
                                     @Override
                                     public void onClick(final DialogInterface dialog, int which) {
 
+                                        //once user select the score and duration, we post the data to our backend
                                         FirebaseAuth mAuth = FirebaseAuth.getInstance();
                                         mAuth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                                             @Override
@@ -168,8 +171,6 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
                                 enterDurationDialog.show();
 
 
-
-                                //dialog.dismiss();
                             }
                         });
                         builderInner.show();
@@ -185,10 +186,11 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
             }
         });
 
+        // Handle when user click attend and add it to the backend
         findViewById(R.id.btn_attend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(EventViewActivity.this, "attend", Toast.LENGTH_SHORT).show();
+
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 mAuth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     @Override
@@ -198,13 +200,13 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
                         User.getService().addAttendee(task.getResult().getToken(),id).enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                //Toast.makeText(EventViewActivity.this, "Finished", Toast.LENGTH_SHORT).show();
+
                             }
 
                             @Override
                             public void onFailure(Call<ResponseBody> call, Throwable t) {
 
-                                //Toast.makeText(EventViewActivity.this, "Falied", Toast.LENGTH_SHORT).show();
+
                             }
                         });
                     }
@@ -215,7 +217,7 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
 
 
 
-
+//if the user is coach, hide attend and RPE score button and display attendance and REP score details
         if(user.isAdmin()) {
             findViewById(R.id.player_contl).setVisibility(View.GONE);
             // Get the ViewPager and set it's PagerAdapter so that it can display items
@@ -223,10 +225,8 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
             viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(),
                     EventViewActivity.this, id, eventType));
 
-            // Give the TabLayout the ViewPager
             TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
             tabLayout.setupWithViewPager(viewPager);
-            //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AttendeeFragment.newInstance(0, id)).commit();
 
         }
     }
@@ -236,7 +236,7 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
     public void onListFragmentInteraction(User item) {
 
     }
-
+//This adapter handle displaying list of attendance and REP score tabs
     public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         final int PAGE_COUNT = 2;
         private Fragment[] fragments;

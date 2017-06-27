@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.tibolte.agendacalendarview.AgendaCalendarView;
 import com.github.tibolte.agendacalendarview.CalendarPickerController;
@@ -17,7 +16,6 @@ import com.github.tibolte.agendacalendarview.models.CalendarEvent;
 import com.github.tibolte.agendacalendarview.models.DayItem;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -30,6 +28,12 @@ import teamc.ucc.ie.teamc.model.Event;
 import teamc.ucc.ie.teamc.model.User;
 
 
+/**
+ * This fragment is responsible for displying events in  calanderView
+ * we used the below library to display them
+ * https://github.com/Tibolte/AgendaCalendarView
+ * we get the events from the backend
+ * */
 public class DailyFragment extends Fragment implements CalendarPickerController{
 
     // TODO: Customize parameter argument names
@@ -38,7 +42,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
     private int mColumnCount = 1;
 
     private ProgressDialog dialog;
-    private Serializable user;
+    private User user;
 
 
     /**
@@ -48,8 +52,10 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
     public DailyFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+
+    /**
+     * Create fragment instance with user data
+     * */
     public static DailyFragment newInstance(int columnCount, User user) {
         DailyFragment fragment = new DailyFragment();
         Bundle args = new Bundle();
@@ -65,7 +71,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-            user = getArguments().getSerializable("user");
+            user = (User) getArguments().getSerializable("user");
         }
 
 
@@ -77,6 +83,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
         View view = inflater.inflate(R.layout.fragment_daily_list, container, false);
 
 
+        // get the calander View
         final AgendaCalendarView mAgendaCalendarView = (AgendaCalendarView) view.findViewById(R.id.agenda_calendar_view);
 
         // minimum and maximum date of our calendar
@@ -90,21 +97,21 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
 
 
+        //show loading progress
         dialog = new ProgressDialog(getContext());
 
 
         if (dialog != null) dialog.show();
+        // get list of events from the backend
         User.getService().getEvent("").enqueue(new Callback<List<Event>>() {
 
             @Override
             public void onResponse(Call<List<Event>> call, Response<List<Event>> response) {
-
                 List<Event> events = response.body();
 
                     List<CalendarEvent> eventList = new ArrayList<>();
-                    mockList(eventList, events);
+                    createEventList(eventList, events);
                     mAgendaCalendarView.init(eventList, minDate, maxDate, Locale.getDefault(), DailyFragment.this);
-
 
                     dialog.hide();
 
@@ -128,7 +135,7 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
 
 
-    private void mockList(List<CalendarEvent> eventList, List<Event> events) {
+    private void createEventList(List<CalendarEvent> eventList, List<Event> events) {
 
         for(Event event: events){
             Calendar startTime1 = Calendar.getInstance();
@@ -149,6 +156,9 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
 
     }
 
+    /**
+     * Once user clicked on event, it will open another activity
+     * */
     @Override
     public void onEventSelected(CalendarEvent event) {
         Intent intent = new Intent(getContext(), EventViewActivity.class);

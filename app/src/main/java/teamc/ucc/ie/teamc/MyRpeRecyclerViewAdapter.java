@@ -12,9 +12,9 @@ import teamc.ucc.ie.teamc.model.User;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * This hold and manage list for RPE score and attandee
+ * {@link RecyclerView.Adapter} that can display a {@link } and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecyclerViewAdapter.ViewHolder> {
 
@@ -22,8 +22,8 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
     private final OnListFragmentInteractionListener mListener;
     private final int type;
 
-    public final static int TYPE_ATTEND = 0;
-    public final static int TYPE_RPE = 1;
+    final static int TYPE_ATTEND = 0;
+    final static int TYPE_RPE = 1;
 
     public MyRpeRecyclerViewAdapter(List<User> items,int type, OnListFragmentInteractionListener listener) {
         mValues = items;

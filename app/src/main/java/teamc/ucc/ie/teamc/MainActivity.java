@@ -30,11 +30,9 @@ import static android.support.design.widget.NavigationView.*;
  * The main homepage activity (screen)
  * */
 public class MainActivity extends AppCompatActivity
-        implements OnNavigationItemSelectedListener, AttendeeFragment.OnListFragmentInteractionListener, AddEventFragment.OnFragmentInteractionListener  {
+        implements OnNavigationItemSelectedListener {
 
 
-
-    private View fragmentContainer;
     private Toolbar toolbar;
     private User user;
 
@@ -46,8 +44,6 @@ public class MainActivity extends AppCompatActivity
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddEventFragment.newInstance("","")).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, AddEventFragment.newInstance()).commit();
         }
 
         else if (id == R.id.nav_logout) {
@@ -151,13 +147,5 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    @Override
-    public void onListFragmentInteraction(User item) {
-
-    }
 }

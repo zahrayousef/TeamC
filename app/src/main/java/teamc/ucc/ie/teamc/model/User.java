@@ -6,9 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import teamc.ucc.ie.teamc.BackendService;
 
-/**
- * Created by zahra on 31/05/2017.
- */
+
 
 public class User implements Serializable{
     @Override

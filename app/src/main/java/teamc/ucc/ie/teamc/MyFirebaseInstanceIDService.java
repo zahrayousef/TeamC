@@ -4,7 +4,8 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
 /**
- * Created by zahra on 29/05/2017.
+ * https://www.youtube.com/watch?v=wKwCgabRV2A
+ * https://firebase.google.com/docs/cloud-messaging/
  */
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {

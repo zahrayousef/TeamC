@@ -29,10 +29,8 @@ import retrofit2.Response;
 import teamc.ucc.ie.teamc.model.User;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * This display players attending and RPE score we get data from the firebase functions
+ * https://developer.android.com/training/material/lists-cards.html
  */
 public class AttendeeFragment extends Fragment {
 
@@ -55,8 +53,11 @@ public class AttendeeFragment extends Fragment {
     public AttendeeFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+
+
+    /**
+     * Create fragment instance with the following argument
+     */
     public static AttendeeFragment newInstance(int columnCount, String eventid, int type) {
         AttendeeFragment fragment = new AttendeeFragment();
         Bundle args = new Bundle();
@@ -97,28 +98,28 @@ public class AttendeeFragment extends Fragment {
 
 
 
-            //recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-
+            // get loged in user
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             if (mAuth.getCurrentUser() != null) {
+                // if user is loged in get the data from the backend
                 mAuth.getCurrentUser().getToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
                     @Override
                     public void onComplete(@NonNull Task<GetTokenResult> task) {
 
+                        // if we are displaying attending, get the attending data otherwise get RPE score
                         if (type == MyRpeRecyclerViewAdapter.TYPE_ATTEND) {
+                            // make request and once we recive the data we assign it to list adapter
                             User.getService().getAttendee(task.getResult().getToken(), eventid).enqueue(new Callback<List<User>>() {
                                 @Override
                                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                                     ((TextView) view.findViewById(R.id.text_num_players)).setText(String.valueOf(response.body().size()));
                                     recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(response.body(), type, mListener));
-                                    //Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT).show();
+
                                 }
 
                                 @Override
                                 public void onFailure(Call<List<User>> call, Throwable t) {
 
-                                    //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    Log.d("app", t.getMessage());
                                 }
                             });
                         } else if (type == MyRpeRecyclerViewAdapter.TYPE_RPE){
@@ -128,7 +129,6 @@ public class AttendeeFragment extends Fragment {
                                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                                     ((TextView) view.findViewById(R.id.text_num_players)).setText(String.valueOf(response.body().size()));
                                     recyclerView.setAdapter(new MyRpeRecyclerViewAdapter(response.body(), type, mListener));
-                                    //Toast.makeText(getContext(), response.body().toString(), Toast.LENGTH_LONG).show();
                                 }
 
                                 @Override
@@ -147,7 +147,9 @@ public class AttendeeFragment extends Fragment {
         return view;
     }
 
-
+/**
+ * Attach listiner so we can listen for user selection, we current not do anything when user click
+ * */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -159,6 +161,7 @@ public class AttendeeFragment extends Fragment {
         }
     }
 
+    // make sure to remove the listner to avoid exception
     @Override
     public void onDetach() {
         super.onDetach();

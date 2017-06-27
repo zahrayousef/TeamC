@@ -11,9 +11,7 @@ import java.util.Date;
 
 import teamc.ucc.ie.teamc.R;
 
-/**
- * Created by zahra on 02/06/2017.
- */
+
 
 public class Event extends BaseCalendarEvent implements Serializable{
 
