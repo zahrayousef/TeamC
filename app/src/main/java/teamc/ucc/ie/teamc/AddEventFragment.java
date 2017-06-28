@@ -179,11 +179,11 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
                 //prepare date and time combine them into one object for startDate and EndDate
                 // create a new DateTime object with date and time
                 DateTime start = new DateTime(startDateJoda);
-                start =  start.plusHours(startTimeJoda.getHourOfDay());
+                start =  start.plusHours(startTimeJoda.getHourOfDay() -1);
                 start = start.plusMinutes(startTimeJoda.getMinuteOfHour());
 
                 DateTime end = new DateTime(endDateJoda);
-                end =  end.plusHours(endTimeJoda.getHourOfDay());
+                end =  end.plusHours(endTimeJoda.getHourOfDay() - 1);
                 end = end.plusMinutes(startTimeJoda.getMinuteOfHour());
 
                 // get user inputs fields
@@ -294,7 +294,7 @@ public class AddEventFragment extends Fragment implements CalendarDatePickerDial
         }
     }
 
-    // listener when user select data
+    // listener when user select time
     @Override
     public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
 

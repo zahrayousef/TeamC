@@ -40,5 +40,6 @@
     </string-array>
 
     <string name="title_activity_event_view">Event</string>
+    <string name="title_wellness_question">Wellness Questionnaire</string>
 
 </resources>
