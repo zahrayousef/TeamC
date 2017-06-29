@@ -8,6 +8,6 @@ public class WellnessReportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wellness_report);
+        setContentView(R.layout.activity_wellness_coach_view);
     }
 }

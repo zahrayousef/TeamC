@@ -39,6 +39,13 @@
         <item>10- Maximal</item>
     </string-array>
 
+
+    <string-array name="example_name">
+        <item>Player 1</item>
+        <item>Player 2</item>
+        <item>Player 3</item>
+    </string-array>
+
     <string name="title_activity_event_view">Event</string>
     <string name="title_wellness_question">Wellness Questionnaire</string>
 

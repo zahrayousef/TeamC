@@ -42,7 +42,7 @@ public class MyRpeRecyclerViewAdapter extends RecyclerView.Adapter<MyRpeRecycler
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(String.valueOf(position+1));
-        holder.mContentView.setText(mValues.get(position).getDisplayName());
+        if (mValues.get(position) != null) holder.mContentView.setText(mValues.get(position).getDisplayName());
 
         if (type == TYPE_RPE) holder.score.setText(String.valueOf(mValues.get(position).getRpe()));
 

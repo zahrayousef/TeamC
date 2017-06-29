@@ -170,10 +170,11 @@ public class DailyFragment extends Fragment implements CalendarPickerController{
             intent.putExtra("start", ((Event) event).getStart().getTime());
             intent.putExtra("end", ((Event) event).getEnd().getTime());
             intent.putExtra("type", ((Event)event).getType());
+            getActivity().startActivity(intent);
         };
 
 
-        getActivity().startActivity(intent);
+
 
     }
 
