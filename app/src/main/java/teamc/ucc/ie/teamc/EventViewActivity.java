@@ -74,7 +74,7 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
         end =  new DateTime(getIntent().getLongExtra("end",0));
 
 // if type is training show the RPE Button if not hide the button
-        if (type.equals("Training")){
+       if (type.equals("Training")){
             eventType = 1;
 
         } else {
