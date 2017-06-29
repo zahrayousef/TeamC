@@ -74,11 +74,11 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
         end =  new DateTime(getIntent().getLongExtra("end",0));
 
 // if type is training show the RPE Button if not hide the button
-       if (type.equals("Training")){
+      if (type.equals("Training")){
             eventType = 1;
 
         } else {
-            findViewById(R.id.btn_rpe).setVisibility(View.GONE);
+            //findViewById(R.id.btn_rpe).setVisibility(View.GONE);
         }
 
 
@@ -247,14 +247,17 @@ public class EventViewActivity extends AppCompatActivity  implements AttendeeFra
             super(fm);
             this.context = context;
 
-            if (type == 0) {
+            fragments = new Fragment[]{AttendeeFragment.newInstance(0, eventId, MyRpeRecyclerViewAdapter.TYPE_ATTEND),
+                    AttendeeFragment.newInstance(0, eventId, MyRpeRecyclerViewAdapter.TYPE_RPE)};
+            tabTitles = new String[] { "Attendance", "RPE Score" };
+/*            if (type == 0) {
                 fragments = new Fragment[]{AttendeeFragment.newInstance(0, eventId, MyRpeRecyclerViewAdapter.TYPE_ATTEND)};
                 tabTitles = new String[] { "Attendance"};
             } else if (type == 1) {
                 fragments = new Fragment[]{AttendeeFragment.newInstance(0, eventId, MyRpeRecyclerViewAdapter.TYPE_ATTEND),
                         AttendeeFragment.newInstance(0, eventId, MyRpeRecyclerViewAdapter.TYPE_RPE)};
                 tabTitles = new String[] { "Attendance", "RPE Score" };
-            }
+            }*/
         }
 
         @Override
